@@ -14,17 +14,17 @@ from Bio.HMM import Utilities
     # A--ST
     # ACCST
 #Set Protein DNA
-class DNAAlphabet(Alphabet.Alphabet):
+class DNA(Alphabet.Alphabet):
     letters = ['A','T','S','C','']
 
 #Set State Main, Delete, Insert
-class StateAlphabet(Alphabet.Alphabet):
+class State(Alphabet.Alphabet):
     letters = ['M', 'N','O','D','E','F','I','J','K','L']
 
 
 
 #inisialisasi hmm builder
-builder = MarkovModel.MarkovModelBuilder(StateAlphabet(),DNAAlphabet())
+builder = MarkovModel.MarkovModelBuilder(State(),DNA())
 
 #transisi dari match state
 builder.allow_transition('M','N')
@@ -90,8 +90,8 @@ builder.set_emission_score('O', 'T', (2/3))
 hmm = builder.get_markov_model()
 
 #list sequence & state utk training
-tseq = [Seq('ACSA',DNAAlphabet()),Seq('AST',DNAAlphabet()),Seq('ACCST',DNAAlphabet())]
-tstate = [MutableSeq('MJNO',StateAlphabet()),MutableSeq('MNO',StateAlphabet()),MutableSeq('MJJNO',StateAlphabet())]
+tseq = [Seq('ACSA',DNA()),Seq('AST',DNA()),Seq('ACCST',DNA())]
+tstate = [MutableSeq('MJNO',State()),MutableSeq('MNO',State()),MutableSeq('MJJNO',State())]
 
 #training dengan menggunakan sequence ACSA, AST, ACCST pada tstate dan tseq
 trainer = Trainer.KnownStateTrainer(hmm)
@@ -101,11 +101,11 @@ for i in range(len(tseq)):
     trainhmm = trainer.train([trainseq])
 
 #Query yang akan dicocokan beserta dengan perhitungan state awalnya
-seq = Seq('ACCCSA', DNAAlphabet())
-state = MutableSeq('MJJJNO', StateAlphabet())
+seq = Seq('ACCCSA', DNA())
+state = MutableSeq('MJJJNO', State())
 
 #algoritma viterbi akan mencari state yang terbaik untuk sequence
-predicted_states, prob = trainhmm.viterbi(seq, StateAlphabet())
+predicted_states, prob = trainhmm.viterbi(seq, State())
 
 #mengeluarkan hasil probabilitas dari sequence, emission, statenya, dan predicted statenya 
 print("Prediction probability: %f" % prob)
